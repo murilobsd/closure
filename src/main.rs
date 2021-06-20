@@ -80,24 +80,24 @@ where
 
 fn generate_workout(config: &Config) {
     let mut expensive_result = Cacher::new(|num| {
-        println!("calculation slowly...");
+        log::warn!("calculation slowly...");
         thread::sleep(Duration::from_secs(2));
         num
     });
 
     if config.intensity < 25 {
-        println!(
+        log::info!(
             "Today, do {} pushups!",
             expensive_result.value(config.intensity)
         );
-        println!(
+        log::info!(
             "Next, do {} situps!",
             expensive_result.value(config.intensity)
         );
     } else if config.random_number == 3 {
-        println!("Take a break today! Remember to stay hydrated");
+        log::info!("Take a break today! Remember to stay hydrated");
     } else {
-        println!(
+        log::info!(
             "Today, run for {} minutes!",
             expensive_result.value(config.intensity)
         );
