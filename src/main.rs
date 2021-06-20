@@ -13,7 +13,9 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 
+use rand::prelude::*;
 use std::collections::HashMap;
+use std::env;
 use std::hash;
 use std::thread;
 use std::time::Duration;
@@ -75,8 +77,15 @@ fn generate_workout(intensity: u32, random_number: u32) {
 }
 
 fn main() {
-    let simulated_user_specified_value = 10;
-    let simulated_random_value = 7;
+    let mut rng = thread_rng();
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() != 2 {
+        panic!("fail");
+    }
+
+    let simulated_user_specified_value: u32 = args[1].parse().unwrap();
+    let simulated_random_value: u32 = rng.gen_range(1..5);
 
     generate_workout(simulated_user_specified_value, simulated_random_value);
 }
