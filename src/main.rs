@@ -21,6 +21,24 @@ use std::thread;
 use std::time::Duration;
 
 #[derive(Debug)]
+struct Config {
+    intensity: u32,
+    random_number: u32,
+}
+
+impl Config {
+    pub fn new(args: &[String]) -> Self {
+        let mut rng = thread_rng();
+        let intensity: u32 = args[1].parse().unwrap();
+        let random_number: u32 = rng.gen_range(1..5);
+        Self {
+            intensity,
+            random_number,
+        }
+    }
+}
+
+#[derive(Debug)]
 struct Cacher<T, K, V>
 where
     T: Fn(K) -> V,
@@ -56,38 +74,42 @@ where
     }
 }
 
-fn generate_workout(intensity: u32, random_number: u32) {
+fn generate_workout(config: &Config) {
     let mut expensive_result = Cacher::new(|num| {
         println!("calculation slowly...");
         thread::sleep(Duration::from_secs(2));
         num
     });
 
-    if intensity < 25 {
-        println!("Today, do {} pushups!", expensive_result.value(intensity));
-        println!("Next, do {} situps!", expensive_result.value(intensity));
-    } else if random_number == 3 {
+    if config.intensity < 25 {
+        println!(
+            "Today, do {} pushups!",
+            expensive_result.value(config.intensity)
+        );
+        println!(
+            "Next, do {} situps!",
+            expensive_result.value(config.intensity)
+        );
+    } else if config.random_number == 3 {
         println!("Take a break today! Remember to stay hydrated");
     } else {
         println!(
             "Today, run for {} minutes!",
-            expensive_result.value(intensity)
+            expensive_result.value(config.intensity)
         );
     }
 }
 
 fn main() {
-    let mut rng = thread_rng();
     let args: Vec<String> = env::args().collect();
 
     if args.len() != 2 {
         panic!("fail");
     }
 
-    let simulated_user_specified_value: u32 = args[1].parse().unwrap();
-    let simulated_random_value: u32 = rng.gen_range(1..5);
+    let config = Config::new(&args);
 
-    generate_workout(simulated_user_specified_value, simulated_random_value);
+    generate_workout(&config);
 }
 
 #[cfg(test)]
