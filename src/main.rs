@@ -1,27 +1,33 @@
 use std::collections::HashMap;
+use std::hash;
 use std::thread;
 use std::time::Duration;
 
-struct Cacher<T>
+#[derive(Debug)]
+struct Cacher<T, K, V>
 where
-    T: Fn(u32) -> u32,
+    T: Fn(K) -> V,
+    K: Eq + hash::Hash + Copy,
+    V: Copy,
 {
     calculation: T,
-    value: HashMap<u32, u32>,
+    value: HashMap<K, V>,
 }
 
-impl<T> Cacher<T>
+impl<T, K, V> Cacher<T, K, V>
 where
-    T: Fn(u32) -> u32,
+    T: Fn(K) -> V,
+    K: Eq + hash::Hash + Copy,
+    V: Copy,
 {
-    fn new(calculation: T) -> Cacher<T> {
+    fn new(calculation: T) -> Cacher<T, K, V> {
         Cacher {
             calculation,
             value: HashMap::new(),
         }
     }
 
-    fn value(&mut self, arg: u32) -> u32 {
+    fn value(&mut self, arg: K) -> V {
         match self.value.get(&arg) {
             Some(v) => *v,
             None => {
