@@ -1,18 +1,19 @@
-# Rust clousure
+# Rust closure
 
-Exemplo simples de como usar **closure** em Rust e seus benefícios, o código atual
-exibe o pattern [Memoization](https://en.wikipedia.org/wiki/Memoization) o qual tras
-vantagens em regras de negócios que demandam muito processamento.
+Exemplo simples de como usar **closure** em Rust e seus benefícios, o código
+atual utiliza o pattern [Memoization](https://en.wikipedia.org/wiki/Memoization)
+o qual trás vantagens quanto utilizamos funções que demandam muito
+processamento e as mesmas são chamadas diversas vezes. 
 
-Basicamente a clousure é usada somente uma vez mantendo o __cache__ do primeiro calculo,
-caso um novo valor seja calculado é inserido em um HashMap o novo valor para aquela calculo.
-
-até o momento não estamos usando Generics, mas será adicionado futuramente =]
+Basicamente a closure é usada somente uma vez mantendo o __cache__ do primeiro
+cálculo, caso um valor diferente seja passado para closure ele é usado como
+chave do HashMap e o valor é a resultante do cálculo.
 
 ## Rodar
 
 ```
-cargo run
+# 10 é a intensidade do exercício
+cargo run -- 10
 ```
 
 ## Test
