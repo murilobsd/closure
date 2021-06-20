@@ -17,6 +17,7 @@ use rand::prelude::*;
 use std::collections::HashMap;
 use std::env;
 use std::hash;
+use std::process;
 use std::thread;
 use std::time::Duration;
 
@@ -27,7 +28,11 @@ struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Self {
+    pub fn new(args: &[String]) -> Result<Self, &str> {
+        if args.len() != 2 {
+            return Err("please add exercise intensity");
+        }
+
         let mut rng = thread_rng();
         let intensity: u32 = args[1].parse().unwrap();
         let random_number: u32 = rng.gen_range(1..5);
@@ -38,7 +43,7 @@ impl Config {
 
         log::debug!("Init Config: {:?}", config);
 
-        config
+        Ok(config)
     }
 }
 
@@ -106,13 +111,12 @@ fn generate_workout(config: &Config) {
 
 fn main() {
     env_logger::init();
+
     let args: Vec<String> = env::args().collect();
-
-    if args.len() != 2 {
-        panic!("fail");
-    }
-
-    let config = Config::new(&args);
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        println!("Parsing arguments: {}", err);
+        process::exit(1);
+    });
 
     generate_workout(&config);
 }
