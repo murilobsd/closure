@@ -31,10 +31,14 @@ impl Config {
         let mut rng = thread_rng();
         let intensity: u32 = args[1].parse().unwrap();
         let random_number: u32 = rng.gen_range(1..5);
-        Self {
+        let config = Self {
             intensity,
             random_number,
-        }
+        };
+
+        log::debug!("Init Config: {:?}", config);
+
+        config
     }
 }
 
@@ -101,6 +105,7 @@ fn generate_workout(config: &Config) {
 }
 
 fn main() {
+    env_logger::init();
     let args: Vec<String> = env::args().collect();
 
     if args.len() != 2 {
